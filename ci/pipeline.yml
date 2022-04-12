@@ -1,0 +1,110 @@
+---
+resource_types:
+  - name: slack-notification
+    type: docker-image
+    source:
+      repository: cfcommunity/slack-notification-resource
+
+resources:
+  - name: spring-boot-migrator-repo
+    type: git
+    icon: github
+    source:
+      uri: ((git-source-repo-url))
+      branch: ((git-branch))
+      private_key: ((git-private-key))
+  - name: spring-boot-migrator-image
+    type: docker-image
+    source:
+      repository: othmankh/sbm
+      tag: 1.0.0
+  - name: notify
+    type: slack-notification
+    source:
+      url: ((slack-webhook))
+jobs:
+  - name: spring-boot-migrator-build
+    serial: true
+    plan:
+      - in_parallel:
+          - get: spring-boot-migrator-image
+          - get: spring-boot-migrator-repo
+            trigger: true
+      - in_parallel:
+          - task: build
+            privileged: true
+            image: spring-boot-migrator-image
+            file: spring-boot-migrator-repo/ci/tasks/maven-build/task.yml
+#          - task: integration-test
+#            privileged: true
+#            image: spring-boot-migrator-image
+#            file: spring-boot-migrator-repo/ci/tasks/maven-integration-test/task.yml
+    on_success:
+      put: notify
+      params:
+        username: Concourse
+        icon_emoji: ":check_green:"
+        channel: "#spring-boot-migrator-pipeline"
+        text: |
+          Job 'spring-boot-migrator-build' succeeded.
+          https://ci.spring.io/builds/$BUILD_ID
+    on_failure:
+      put: notify
+      params:
+        username: Concourse
+        icon_emoji: ":fail:"
+        channel: "#spring-boot-migrator-pipeline"
+        text: |
+          Hello <!here|here>
+          Job 'spring-boot-migrator-build' failed, see the build here:
+          https://ci.spring.io/builds/$BUILD_ID
+
+#  - name: create-release
+#    serial: true
+#    plan:
+#      - in_parallel:
+#          - get: spring-boot-migrator-image
+#          - get: spring-boot-migrator-repo
+#          - task: release
+#            file: spring-boot-migrator-repo/ci/tasks/release/task.yml
+#            vars:
+#              release: release
+
+
+    #      - task: switch-release
+    #        file: spring-boot-migrator-repo/ci/tasks/switch-release/task.yml
+    #        vars:
+    #          release: release
+    #      - put: spring-boot-migrator-repo
+    #        params:
+    #          repository: spring-boot-migrator-repo
+    #      - task: package-dist
+    #        file: spring-boot-migrator-repo/ci/tasks/package-dist/task.yml
+    #      - task: create-release
+    #        file: spring-boot-migrator-repo/ci/tasks/create-release/task.yml
+    #        vars:
+    #          ghtoken: ((auth-token))
+    #      # - task: create-release-notes
+    #      #   file: spring-boot-migrator-repo/ci/tasks/create-release-notes/task.yml
+    #      - task: update-version
+    #        file: spring-boot-migrator-repo/ci/tasks/update-version/task.yml
+    #      - task: switch-release
+    #        file: spring-boot-migrator-repo/ci/tasks/switch-release/task.yml
+    #        vars:
+    #          release: snapshot
+    #      - put: spring-boot-migrator-repo
+    #        params:
+    #          repository: spring-boot-migrator-repo
+
+#    on_success:
+#      put: notify
+#      params:
+#        username: Concourse
+#        icon_emoji: ":check_green:"
+#        channel: "#spring-boot-migrator-pipeline"
+#        text: |
+#          Released new Version : https://github.com/pivotal/spring-boot-migrator/releases
+#    on_failure:
+#      put: notify
+#      params:
+#        text: "Creating the release failed."
