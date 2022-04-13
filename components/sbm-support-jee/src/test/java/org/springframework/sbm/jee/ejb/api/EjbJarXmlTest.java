@@ -48,16 +48,15 @@ class EjbJarXmlTest {
                 "   xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n" +
                 "   xsi:schemaLocation=\"http://java.sun.com/xml/ns/j2ee\n" +
                 "   http://xmlns.jcp.org/xml/ns/javaee/ejb-jar_2_1.xsd\" version=\"2.1\">\n" +
-                "   <description>Example of a session bean</description>\n" +
-                "   <display-name>MyTimeBeanEJBName</display-name>\n" +
+                "   <display-name>SomeEJBName</display-name>\n" +
                 "   <enterprise-beans>\n" +
-                "      <session id=\"Session_MyTime\">\n" +
-                "         <description>An EJB named MyTimeBean</description>\n" +
-                "         <display-name>MyTimeBeanName</display-name>\n" +
-                "         <ejb-name>MyTimeBean</ejb-name>\n" +
-                "         <local-home>mytimepak.MyTimeLocalHome</local-home>\n" +
-                "         <local>mytimepak.MyTimeLocal</local>\n" +
-                "         <ejb-class>mytimepak.MyTimeBean</ejb-class>\n" +
+                "      <session id=\"SomeSessionBean\">\n" +
+                "         <description>Description for SomeEJBName</description>\n" +
+                "         <display-name>SomeStatelessBean</display-name>\n" +
+                "         <ejb-name>SomeStatelessEjb</ejb-name>\n" +
+                "         <local-home>com.example.SomeStatelessEjbHome</local-home>\n" +
+                "         <local>com.example.SomeStatelessEjbLocal</local>\n" +
+                "         <ejb-class>com.example.SomeStatelessEjb</ejb-class>\n" +
                 "         <session-type>Stateless</session-type>\n" +
                 "         <transaction-type>Container</transaction-type>\n" +
                 "      </session>\n" +
@@ -74,12 +73,12 @@ class EjbJarXmlTest {
         assertThat(ejbJarXml.getEnterpriseBeans().getSessionOrEntityOrMessageDriven()).hasSize(1);
         assertThat(ejbJarXml.getEnterpriseBeans().getSessionOrEntityOrMessageDriven().get(0)).isInstanceOf(SessionBeanType.class);
         SessionBeanType sb = (SessionBeanType) ejbJarXml.getEnterpriseBeans().getSessionOrEntityOrMessageDriven().get(0);
-        assertThat(sb.getDescription().get(0).getValue()).isEqualTo("An EJB named MyTimeBean");
-        assertThat(sb.getDisplayName().get(0).getValue()).isEqualTo("MyTimeBeanName");
-        assertThat(sb.getEjbName().getValue()).isEqualTo("MyTimeBean");
-        assertThat(sb.getLocalHome().getValue()).isEqualTo("mytimepak.MyTimeLocalHome");
-        assertThat(sb.getLocal().getValue()).isEqualTo("mytimepak.MyTimeLocal");
-        assertThat(sb.getEjbClass().getValue()).isEqualTo("mytimepak.MyTimeBean");
+        assertThat(sb.getDescription().get(0).getValue()).isEqualTo("Description for SomeEJBName");
+        assertThat(sb.getDisplayName().get(0).getValue()).isEqualTo("SomeStatelessBean");
+        assertThat(sb.getEjbName().getValue()).isEqualTo("SomeStatelessEjb");
+        assertThat(sb.getLocalHome().getValue()).isEqualTo("com.example.SomeStatelessEjbHome");
+        assertThat(sb.getLocal().getValue()).isEqualTo("com.example.SomeStatelessEjbLocal");
+        assertThat(sb.getEjbClass().getValue()).isEqualTo("com.example.SomeStatelessEjb");
         assertThat(sb.getSessionType().getValue()).isEqualTo("Stateless");
         assertThat(sb.getTransactionType().getValue()).isEqualTo("Container");
     }
