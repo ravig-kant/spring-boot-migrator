@@ -35,7 +35,7 @@ public class MuleToJavaDSLApiKitTest extends JavaDSLActionBaseTest {
         addXMLFileToResource(muleXml);
         runAction();
         assertThat(projectContext.getProjectJavaSources().list()).hasSize(1);
-        assertThat(projectContext.getProjectJavaSources().list().get(0).print())
+        assertThat(getGeneratedJavaFile())
                 .isEqualTo(
                         "package com.example.javadsl;\n" +
                                 "import org.springframework.context.annotation.Bean;\n" +
@@ -43,6 +43,7 @@ public class MuleToJavaDSLApiKitTest extends JavaDSLActionBaseTest {
                                 "import org.springframework.http.HttpMethod;\n" +
                                 "import org.springframework.integration.dsl.IntegrationFlow;\n" +
                                 "import org.springframework.integration.dsl.IntegrationFlows;\n" +
+                                "import org.springframework.integration.http.dsl.Http;\n" +
                                 "\n" +
                                 "@Configuration\n" +
                                 "public class FlowConfigurations {\n" +
@@ -55,6 +56,7 @@ public class MuleToJavaDSLApiKitTest extends JavaDSLActionBaseTest {
                                 "                Http.inboundGateway(\"/helloworld\").requestMapping(r -> r.methods(HttpMethod.GET)))\n" +
                                 "                .handle((p, h) -> \"{\\\"message\\\": \\\"Hello worldXXX\\\"}\")\n" +
                                 "                .get();\n" +
-                                "    }}");
+                                "    }\n" +
+                                "}");
     }
 }

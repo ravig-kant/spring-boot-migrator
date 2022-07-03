@@ -1,3 +1,20 @@
+## [0.11.2](https://github.com/spring-projects-experimental/spring-boot-migrator/releases/tag/0.11.2) - 2022-05-27
+
+### Adds
+- 
+
+### Fixes
+- Fix Conditions for Spring Boot 2.4 to 2.5 Upgrade recipes (#133). Thanks @Turbots
+
+## [0.11.1](https://github.com/spring-projects-experimental/spring-boot-migrator/releases/tag/0.11.1) - 2022-05-23
+
+### Adds
+- Migrate all properties to @Stateless when migrating ejb-jar.xml to annotation (#56). Thanks, @ravig-kant
+- Support for <db:select /> in mule (#119). Thanks @sanagaraj-pivotal
+
+### Fixes
+- recipesFound null in upgrade-asciidoc.ftl:46 breaks HTML report generation (#124). Thanks, @timtebeek
+
 ## [0.11.0](https://github.com/spring-projects-experimental/spring-boot-migrator/releases/tag/0.11.0) -  
 
 ### Adds

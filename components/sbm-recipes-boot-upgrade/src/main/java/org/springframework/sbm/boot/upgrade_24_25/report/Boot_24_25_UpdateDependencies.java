@@ -19,7 +19,7 @@ import org.springframework.sbm.boot.UpgradeSectionBuilder;
 import org.springframework.sbm.boot.asciidoctor.RelevantChangeSection;
 import org.springframework.sbm.boot.asciidoctor.Section;
 import org.springframework.sbm.boot.asciidoctor.TodoList;
-import org.springframework.sbm.boot.upgrade_24_25.conditions.HasSpringBoot24Parent;
+import org.springframework.sbm.boot.upgrade_24_25.conditions.HasSpringBootParentOfVersion;
 import org.springframework.sbm.engine.context.ProjectContext;
 import org.springframework.sbm.build.impl.OpenRewriteMavenBuildFile;
 
@@ -28,15 +28,16 @@ import java.nio.file.Path;
 public class Boot_24_25_UpdateDependencies implements UpgradeSectionBuilder {
     @Override
     public boolean isApplicable(ProjectContext projectContext) {
-        HasSpringBoot24Parent condition = new HasSpringBoot24Parent();
+        HasSpringBootParentOfVersion condition = new HasSpringBootParentOfVersion();
+        condition.setVersionStartingWith("2.4.");
         return condition.evaluate(projectContext);
     }
 
     @Override
     public Section build(ProjectContext projectContext) {
         OpenRewriteMavenBuildFile buildFile = (OpenRewriteMavenBuildFile) projectContext.getBuildFile();
-        String version = buildFile.getPom().getMavenModel().getPom().getParent().getVersion();
-        Path pathToPom = buildFile.getPom().getSourcePath().normalize();
+        String version = buildFile.getPom().getPom().getRequested().getParent().getVersion();
+        Path pathToPom = buildFile.getSourcePath();
 
         return RelevantChangeSection.builder()
                 .title("Update dependencies")

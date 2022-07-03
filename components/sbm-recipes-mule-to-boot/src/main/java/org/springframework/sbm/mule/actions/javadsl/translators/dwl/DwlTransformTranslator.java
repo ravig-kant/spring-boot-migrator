@@ -53,6 +53,7 @@ public class DwlTransformTranslator implements MuleComponentToSpringIntegrationD
 
     @Override
     public DslSnippet translate(
+            int id,
             TransformMessageType component,
             QName name,
             MuleConfigurations muleConfigurations,
@@ -65,19 +66,21 @@ public class DwlTransformTranslator implements MuleComponentToSpringIntegrationD
                 return formExternalFileBasedDSLSnippet(component);
             }
 
-            return formEmbeddedDWLBasedDSLSnippet(component, Helper.sanitizeForBeanMethodName(flowName));
+            return formEmbeddedDWLBasedDSLSnippet(component, Helper.sanitizeForBeanMethodName(flowName), id);
         }
 
         return noSupportDslSnippet();
     }
 
     private DslSnippet noSupportDslSnippet() {
-        String noSupport = "// FIXME: No support for following DW transformation: <dw:set-property/> <dw:set-session-variable /> <dw:set-variable />";
-        return new DslSnippet(noSupport, Set.of(), Set.of(), Set.of());
+        String noSupport = " // FIXME: No support for following DW transformation: <dw:set-property/> <dw:set-session-variable /> <dw:set-variable />";
+        return DslSnippet.builder()
+                .renderedSnippet(noSupport)
+                .build();
     }
 
-    private DslSnippet formEmbeddedDWLBasedDSLSnippet(TransformMessageType component, String flowName) {
-        String className = capitalizeFirstLetter(flowName) + "Transform";
+    private DslSnippet formEmbeddedDWLBasedDSLSnippet(TransformMessageType component, String flowName, int id) {
+        String className = capitalizeFirstLetter(flowName) + "Transform_" + id;
 
         String dwlContent = component.getSetPayload().getContent().toString();
         String dwlContentCommented = "     * " + dwlContent.replace("\n", "\n     * ") + "\n";
@@ -85,7 +88,11 @@ public class DwlTransformTranslator implements MuleComponentToSpringIntegrationD
                 replaceClassName(externalClassContentPrefixTemplate, className) +
                         dwlContentCommented +
                         replaceClassName(externalClassContentSuffixTemplate, className);
-        return new DslSnippet(replaceClassName(STATEMENT_CONTENT, className), Collections.emptySet(), Collections.emptySet(), externalClassContent);
+
+        return DslSnippet.builder()
+                .renderedSnippet(replaceClassName(STATEMENT_CONTENT, className))
+                .externalClassContent(externalClassContent)
+                .build();
     }
 
     private DslSnippet formExternalFileBasedDSLSnippet(TransformMessageType component) {
@@ -96,7 +103,10 @@ public class DwlTransformTranslator implements MuleComponentToSpringIntegrationD
                         + "     * from file "
                         + resource.replace("classpath:", "")
                         + replaceClassName(externalClassContentSuffixTemplate, className);
-        return new DslSnippet(replaceClassName(STATEMENT_CONTENT, className), Collections.emptySet(), Collections.emptySet(), content);
+        return DslSnippet.builder()
+                .renderedSnippet(replaceClassName(STATEMENT_CONTENT, className))
+                .externalClassContent(content)
+                .build();
     }
 
     public static String sanitizeForClassName(String classNameCandidate) {

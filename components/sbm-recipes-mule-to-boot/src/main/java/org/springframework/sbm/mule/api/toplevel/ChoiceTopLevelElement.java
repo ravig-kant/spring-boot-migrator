@@ -29,19 +29,20 @@ public class ChoiceTopLevelElement extends AbstractTopLevelElement {
 
     public String renderDslSnippet() {
         StringBuilder sb = new StringBuilder();
-        sb.append(composePrefixDslCode());
         String dsl = getDslSnippets().stream().map(DslSnippet::getRenderedSnippet).collect(Collectors.joining("\n"));
+        sb.append(composePrefixDslCode(dsl));
         sb.append(dsl);
         Set<String> requiredImports = getRequiredImports();
         requiredImports.add("org.springframework.integration.dsl.IntegrationFlow");
         requiredImports.add("org.springframework.integration.dsl.IntegrationFlows");
-        requiredImports.add("org.springframework.integration.amqp.dsl.Amqp");
         getDslSnippets().forEach(ds -> requiredImports.addAll(ds.getRequiredImports()));
         return sb.toString();
     }
 
-
-    protected String composePrefixDslCode() {
+    protected String composePrefixDslCode(String dsl) {
+        if (dsl != null && dsl.isBlank()) {
+            return "sf -> sf.handle((p,h) -> p)";
+        }
         return "sf -> sf";
     }
 

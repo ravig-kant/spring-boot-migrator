@@ -51,22 +51,24 @@ public class HttpRequestTranslator implements MuleComponentToSpringIntegrationDs
             "                )";
 
     @Override
-    public DslSnippet translate(RequestType component,
+    public DslSnippet translate(int id, RequestType component,
                                 QName name,
                                 MuleConfigurations muleConfigurations,
                                 String flowName, Map<Class, MuleComponentToSpringIntegrationDslTranslator> translatorsMap) {
 
         RequestConfigType config = getRequestConfiguration(component, muleConfigurations);
-        return new DslSnippet(
-                template
-                        .replace("$PATH", emptyStringIfNull(component.getPath()))
-                        .replace("$METHOD", defaultToValueIfNull(component.getMethod(), "GET"))
-                        .replace("$HOST", emptyStringIfNull(config.getHost()))
-                        .replace("$PORT", emptyStringIfNull(config.getPort()))
-                        .replace("$PROTOCOL", defaultToValueIfNull(config.getProtocol(), "http").toLowerCase())
-                ,
-                Set.of("org.springframework.http.HttpMethod")
-        );
+
+        return DslSnippet.builder()
+                .renderedSnippet(
+                        template
+                                .replace("$PATH", emptyStringIfNull(component.getPath()))
+                                .replace("$METHOD", defaultToValueIfNull(component.getMethod(), "GET"))
+                                .replace("$HOST", emptyStringIfNull(config.getHost()))
+                                .replace("$PORT", emptyStringIfNull(config.getPort()))
+                                .replace("$PROTOCOL", defaultToValueIfNull(config.getProtocol(), "http").toLowerCase())
+                )
+                .requiredImports(Set.of("org.springframework.http.HttpMethod"))
+                .build();
     }
 
     private RequestConfigType getRequestConfiguration(RequestType component, MuleConfigurations muleConfigurations) {
