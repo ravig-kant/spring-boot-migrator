@@ -15,12 +15,13 @@
   ~ limitations under the License.
   -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.springframework.sbm</groupId>
     <artifactId>spring-boot-migrator</artifactId>
-    <version>0.11.2-SNAPSHOT</version>
+    <version>0.10.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <properties>
@@ -28,18 +29,18 @@
         <jaxb-maven-plugin.version>2.5.0</jaxb-maven-plugin.version>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
-        <openrewrite.version>7.22.0</openrewrite.version>
+        <openrewrite.version>7.24.2</openrewrite.version>
         <openrewrite.spring.version>4.17.0</openrewrite.spring.version>
-        <spring-boot.version>2.5.12</spring-boot.version>
+        <spring-boot.version>2.4.4</spring-boot.version>
         <progressbar.version>0.9.0</progressbar.version>
-        <testcontainers.version>9baedef17589ff70f7a585c809e0b1beb27eff62</testcontainers.version>
+        <testcontainers.version>1.16.3</testcontainers.version>
         <maven-invoker.version>3.0.1</maven-invoker.version>
         <spring-shell-starter.version>2.0.1.RELEASE</spring-shell-starter.version>
         <shrinkwrap.resolvers.version>3.1.4</shrinkwrap.resolvers.version>
         <lombok.version>1.18.20</lombok.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.csvParser.outputEncoding>UTF-8</project.csvParser.outputEncoding>
-        <jackson.version>2.12.6</jackson.version>
+        <jackson.version>2.12.2</jackson.version>
         <jackson-databind.version>2.12.6.1</jackson-databind.version>
         <generated-sources.dir>src/generated/java</generated-sources.dir>
     </properties>
@@ -49,7 +50,7 @@
         </developerConnection>
         <connection>scm:git:https://github.com/spring-projects-experimental/spring-boot-migrator</connection>
         <url>https://github.com/spring-projects-experimental/spring-boot-migrator</url>
-        <tag>0.11.0</tag>
+        <tag>0.7.1</tag>
     </scm>
 
     <!--	<scm>-->
@@ -75,11 +76,6 @@
             <id>mavencentral</id>
             <name>mavencentral</name>
             <url>https://repo.maven.apache.org/maven2</url>
-        </repository>
-        <!-- TODO: remove after b umping testcontainers to > 1.17.1 -->
-        <repository>
-            <id>jitpack.io</id>
-            <url>https://jitpack.io</url>
         </repository>
     </repositories>
 
@@ -187,21 +183,6 @@
             <dependency>
                 <groupId>org.openrewrite</groupId>
                 <artifactId>rewrite-yaml</artifactId>
-                <version>${openrewrite.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.openrewrite</groupId>
-                <artifactId>rewrite-json</artifactId>
-                <version>${openrewrite.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.openrewrite</groupId>
-                <artifactId>rewrite-protobuf</artifactId>
-                <version>${openrewrite.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.openrewrite</groupId>
-                <artifactId>rewrite-hcl</artifactId>
                 <version>${openrewrite.version}</version>
             </dependency>
             <dependency>
@@ -338,7 +319,7 @@
                 <artifactId>maven-release-plugin</artifactId>
                 <version>3.0.0-M4</version>
                 <configuration>
-                    <connectionUrl>scm:git:https://github.com/spring-projects-experimental/spring-boot-migrator.git</connectionUrl>
+                    <connectionUrl>scm:git:https://github.com/pivotal/spring-boot-migrator.git</connectionUrl>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <tagNameFormat>@{project.version}</tagNameFormat>
                     <releaseProfiles>release</releaseProfiles>
@@ -351,9 +332,9 @@
                 <version>1.4.0</version>
                 <configuration>
                     <description>Description of your release</description>
-                    <releaseName>0.11.0</releaseName>
+                    <releaseName>0.8.0</releaseName>
                     <!-- <tag>${project.version}</tag> -->
-                    <tag>0.11.0</tag>
+                    <tag>0.8.0</tag>
 
                     <!-- If your project has additional artifacts, such as ones produced by
                          the maven-assembly-plugin, you can define the following
@@ -366,13 +347,7 @@
                             </includes>
                         </fileSet>
                     </fileSets>
-                    <repositoryId>spring-projects-experimental/spring-boot-migrator</repositoryId>
-                </configuration>
-            </plugin>
-            <plugin>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
+                    <repositoryId>pivotal/spring-boot-migrator</repositoryId>
                 </configuration>
             </plugin>
 
